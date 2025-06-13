@@ -15,7 +15,7 @@ from gtts import gTTS
 
 api_key = 'API_KEY'
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=)
 dp = Dispatcher()
 
 translator = Translator()
