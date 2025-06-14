@@ -11,6 +11,8 @@ import sqlite3
 import aiohttp
 import logging
 
+from keyboards import main
+
 
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()

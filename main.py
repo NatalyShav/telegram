@@ -1,8 +1,8 @@
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command
-from aiogram.types import Message,FSInputFile
+from aiogram.filters import Command, CommandStart
+from aiogram.types import Message,FSInputFile, CallbackQuery
 from googletrans import Translator
 
 from config import TOKEN
@@ -11,14 +11,24 @@ import random
 import aiohttp
 
 from gtts import gTTS
-
+import keyboards as kb
 
 api_key = 'API_KEY'
 
-bot = Bot(token=)
+bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 translator = Translator()
+
+@dp.callback_query(F.data == 'catalog')
+async def catalog(callback: CallbackQuery):
+    await callback.answer("Каталог товаров подгружается", show_alert=True)
+    await callback.message.edit_text("Вот каталог нашей продукции", reply_markup=await kb.test_keyboard())
+
+
+@dp.message(F.text == "кнопка №1")
+async def user_button(message: Message):
+    await message.answer("Обработка нажатия на reply-кнопку")
 
 @dp.message(Command('weather'))
 async def weather(message: Message):
@@ -97,9 +107,10 @@ async def help(message: Message):
     await message.answer("Этот бот умеет выполнять команды:\n/start\n/help\n/audion\n/photo\n/training\n/weather")
 
 
-@dp.message(Command('start'))
+@dp.message(CommandStart())
 async def start(message:Message):
-    await message.answer('Приветики. Я бот!')
+    await message.answer('Приветики. Я бот!', reply_markup=kb.inlline_keyboard_test)
+
 
 @dp.message(F.text)
 async def translate_to_english(message: Message):
@@ -109,6 +120,7 @@ async def translate_to_english(message: Message):
         await message.answer(f"Перевод: {translated.text}")
     except Exception as e:
         await message.answer("Ошибка при переводе: " + str(e))
+
 
 async def main():
     await dp.start_polling(bot)
